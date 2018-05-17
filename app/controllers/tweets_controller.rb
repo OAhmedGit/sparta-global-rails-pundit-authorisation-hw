@@ -6,21 +6,23 @@ class TweetsController < ApplicationController
   # GET /tweets.json
   def index
     @tweets = current_user.tweets
-    # authorize @tweets
+    authorize @tweets
   end
 
   # GET /tweets/1
   # GET /tweets/1.json
   def show
+    authorize @tweet
     if(@tweet.user.id != current_user.id)
       redirect_to tweets_path
     end
+
   end
 
   # GET /tweets/new
   def new
     @tweet = Tweet.new
-    # authorize @tweet
+    authorize @tweet
   end
 
   # GET /tweets/1/edit
@@ -28,14 +30,17 @@ class TweetsController < ApplicationController
     if(@tweet.user.id != current_user.id)
       redirect_to tweets_path
     end
+    authorize @tweet
   end
 
   # POST /tweets
   # POST /tweets.json
   def create
     @tweet = Tweet.new(tweet_params)
-    authorize @tweet
+
     @tweet.user = current_user
+
+    authorize @tweet
 
     respond_to do |format|
       if @tweet.save
@@ -51,6 +56,7 @@ class TweetsController < ApplicationController
   # PATCH/PUT /tweets/1
   # PATCH/PUT /tweets/1.json
   def update
+    authorize @tweet
     if(@tweet.user.id != current_user.id)
       redirect_to tweets_path
     end
@@ -65,12 +71,12 @@ class TweetsController < ApplicationController
       end
     end
 
-    authorize @tweet
   end
 
   # DELETE /tweets/1
   # DELETE /tweets/1.json
   def destroy
+    authorize @tweet
     if(@tweet.user.id != current_user.id)
       redirect_to tweets_path
     end
@@ -86,7 +92,6 @@ class TweetsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_tweet
       @tweet = Tweet.find(params[:id])
-      # authorize @tweet
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
